@@ -30,7 +30,7 @@ public class ClientBalanceChangeController {
         clientBalanceChangeService.refreshProfitForAllClients();
     }
 
-    @PutMapping("/{clientId}")
+    @PutMapping("/{clientId}/refresh")
     @Operation(summary = "Refresh profit for client by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Profit refreshed"),
