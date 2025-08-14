@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
@@ -95,7 +96,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private void validateProcessingTimes(ZonedDateTime startProcessingTime, ZonedDateTime endProcessingTime) {
-        if (startProcessingTime.compareTo(endProcessingTime) > 0) {
+        if (Objects.nonNull(startProcessingTime) && Objects.nonNull(endProcessingTime)
+                && startProcessingTime.compareTo(endProcessingTime) > 0) {
             throw new ApiException(400, "Start processing time must be less than or equal to end processing time");
         }
     }

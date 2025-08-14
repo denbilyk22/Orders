@@ -8,8 +8,8 @@ import java.util.UUID;
 
 public record OrderRequest(@NotBlank @Size(max = 255) String name,
                            @NotNull BigDecimal price,
-                           @NotNull ZonedDateTime startProcessingTime,
-                           @NotNull ZonedDateTime endProcessingTime,
+                           ZonedDateTime startProcessingTime,
+                           ZonedDateTime endProcessingTime,
                            @NotNull UUID supplierId,
                            @NotNull UUID consumerId) {
 }
