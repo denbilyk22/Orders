@@ -1,0 +1,10 @@
+CREATE TYPE client_balance_change_type AS ENUM ('ORDER_CREATION', 'ORDER_UPDATE', 'ADJUSTMENT');
+
+CREATE TABLE IF NOT EXISTS client_balance_changes
+(
+    id          UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    amount      NUMERIC                    NOT NULL,
+    change_type CLIENT_BALANCE_CHANGE_TYPE NOT NULL,
+    client_id   UUID REFERENCES clients,
+    order_id    UUID REFERENCES orders
+);
