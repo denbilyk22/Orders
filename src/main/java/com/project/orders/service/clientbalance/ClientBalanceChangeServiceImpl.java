@@ -1,6 +1,5 @@
 package com.project.orders.service.clientbalance;
 
-import com.project.orders.exception.ApiException;
 import com.project.orders.persistence.repository.ClientBalanceChangeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

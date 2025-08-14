@@ -3,7 +3,6 @@ package com.project.orders.service.order;
 import com.project.orders.dto.request.OrderRequest;
 import com.project.orders.dto.response.OrderResponse;
 import com.project.orders.dto.response.PageResponse;
-import com.project.orders.enums.ClientBalanceChangeType;
 import com.project.orders.exception.ApiException;
 import com.project.orders.mapper.OrderMapper;
 import com.project.orders.persistence.model.Client;
@@ -72,8 +71,8 @@ public class OrderServiceImpl implements OrderService {
 
         orderRepository.save(order);
 
-        var supplierBalanceChange = createBalanceChange(order.getPrice(), ORDER_CREATION, supplier, order);
-        var consumerBalanceChange = createBalanceChange(order.getPrice().negate(), ORDER_CREATION, consumer, order);
+        var supplierBalanceChange = createOrderCreationBalanceChange(order.getPrice(), supplier, order);
+        var consumerBalanceChange = createOrderCreationBalanceChange(order.getPrice().negate(), consumer, order);
         clientBalanceChangeRepository.saveAll(List.of(supplierBalanceChange, consumerBalanceChange));
 
         return orderMapper.toDto(order);
@@ -134,11 +133,10 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    private ClientBalanceChange createBalanceChange(BigDecimal amount, ClientBalanceChangeType changeType, Client client,
-                                                    Order order) {
+    private ClientBalanceChange createOrderCreationBalanceChange(BigDecimal amount, Client client, Order order) {
         return ClientBalanceChange.builder()
                 .amount(amount)
-                .changeType(changeType)
+                .changeType(ORDER_CREATION)
                 .client(client)
                 .order(order)
                 .build();
