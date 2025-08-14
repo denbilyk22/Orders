@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/client-balance-change")
+@RequestMapping("/client-balance")
 @RequiredArgsConstructor
 public class ClientBalanceChangeController {
 
