@@ -3,12 +3,10 @@ package com.project.orders.persistence.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "orders")
@@ -16,11 +14,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Order implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class Order extends BaseEntity {
 
     private String name;
 
@@ -29,9 +25,6 @@ public class Order implements Serializable {
     private ZonedDateTime startProcessingDate;
 
     private ZonedDateTime endProcessingDate;
-
-    @Builder.Default
-    private ZonedDateTime createdDate = ZonedDateTime.now();
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude

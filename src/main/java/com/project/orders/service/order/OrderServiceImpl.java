@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
@@ -55,21 +54,24 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderResponse create(OrderRequest orderRequest) {
         validateOrderRequest(orderRequest);
-        validateOrderUniqueness(orderRequest.name(), orderRequest.supplierId(), orderRequest.consumerId());
 
         var supplier = findClientById(orderRequest.supplierId());
         var consumer = findClientById(orderRequest.consumerId());
 
         validateClientActiveStatus(supplier);
         validateClientActiveStatus(consumer);
-        validateConsumerBalanceDecreasing(consumer, orderRequest.price());
-
-        addOrderProcessingDelay();
 
         var order = orderMapper.toEntity(orderRequest);
+        order.setStartProcessingDate(ZonedDateTime.now());
         order.setSupplier(supplier);
         order.setConsumer(consumer);
 
+        addOrderProcessingDelay();
+
+        validateOrderUniqueness(orderRequest.name(), orderRequest.supplierId(), orderRequest.consumerId());
+        validateConsumerBalanceDecreasing(consumer, orderRequest.price());
+
+        order.setEndProcessingDate(ZonedDateTime.now());
         orderRepository.save(order);
 
         var supplierBalanceChange = createOrderCreationBalanceChange(order.getPrice(), supplier, order);
@@ -95,13 +97,6 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    private void validateProcessingTimes(ZonedDateTime startProcessingTime, ZonedDateTime endProcessingTime) {
-        if (Objects.nonNull(startProcessingTime) && Objects.nonNull(endProcessingTime)
-                && startProcessingTime.compareTo(endProcessingTime) > 0) {
-            throw new ApiException(400, "Start processing time must be less than or equal to end processing time");
-        }
-    }
-
     private void validateSupplierAndConsumer(UUID supplierId, UUID consumerId) {
         if (supplierId.equals(consumerId)) {
             throw new ApiException(400, "Order supplier and consumer must be not the same client");
@@ -110,7 +105,6 @@ public class OrderServiceImpl implements OrderService {
 
     private void validateOrderRequest(OrderRequest orderRequest) {
         validatePrice(orderRequest.price());
-        validateProcessingTimes(orderRequest.startProcessingTime(), orderRequest.endProcessingTime());
         validateSupplierAndConsumer(orderRequest.supplierId(), orderRequest.consumerId());
     }
 

@@ -3,11 +3,9 @@ package com.project.orders.persistence.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "clients")
@@ -15,11 +13,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Client implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class Client extends BaseEntity {
 
     private String name;
 
@@ -31,9 +27,6 @@ public class Client implements Serializable {
     private Boolean active = true;
 
     private ZonedDateTime deactivationDate;
-
-    @Builder.Default
-    private ZonedDateTime createdDate = ZonedDateTime.now();
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
